@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分数比較アプリ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* カスタムのCSSはTailwindでカバーできない微調整用（今回はTailwindのみでほぼ完結します） */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center py-6 px-2 md:px-4 font-sans transition-colors duration-700 bg-slate-800 text-white overflow-hidden">
+
+    <!-- メイン比較エリア。グリッドレイアウトを用いて円の中心と記号を揃える -->
+    <div class="w-full max-w-5xl grid grid-cols-[1fr_auto_1fr] gap-x-2 md:gap-x-6 lg:gap-x-12 gap-y-4 md:gap-y-8 items-center justify-items-center">
+        
+        <!-- 上段: 左側の分数 -->
+        <div class="col-start-1 col-end-2 w-full flex justify-center">
+            <div class="flex flex-col items-center justify-center bg-white px-3 md:px-6 py-4 md:py-8 lg:py-10 rounded-2xl md:rounded-3xl shadow-lg w-full max-w-[140px] sm:max-w-[180px] md:max-w-[280px] lg:max-w-[340px]">
+                
+                <!-- 分子プルダウン -->
+                <div class="relative inline-block w-20 sm:w-24 md:w-36 lg:w-48">
+                    <select id="left-num-select" class="w-full bg-white border border-gray-300 rounded-xl px-2 py-1 md:py-2 lg:py-3 text-center text-4xl md:text-6xl lg:text-[86px] font-normal cursor-pointer outline-none transition-all hover:bg-gray-50 focus:ring-2 focus:ring-opacity-50">
+                        <!-- JSで動的に追加 -->
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 md:px-3 lg:px-4 text-gray-800">
+                        <svg class="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 分数の横線（括線をさらに20%細く、両端直角） -->
+                <div id="left-line" class="w-16 sm:w-20 md:w-40 lg:w-52 h-[3px] md:h-[6px] my-2 md:my-4 lg:my-6 transition-colors duration-500 rounded-none"></div>
+                
+                <!-- 分母プルダウン -->
+                <div class="relative inline-block w-20 sm:w-24 md:w-36 lg:w-48">
+                    <select id="left-den-select" class="w-full bg-white border border-gray-300 rounded-xl px-2 py-1 md:py-2 lg:py-3 text-center text-4xl md:text-6xl lg:text-[86px] font-normal cursor-pointer outline-none transition-all hover:bg-gray-50 focus:ring-2 focus:ring-opacity-50">
+                        <!-- JSで動的に追加 -->
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 md:px-3 lg:px-4 text-gray-800">
+                        <svg class="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 上段: 中央は空ける -->
+        <div class="col-start-2 col-end-3"></div>
+
+        <!-- 上段: 右側の分数 -->
+        <div class="col-start-3 col-end-4 w-full flex justify-center">
+            <div class="flex flex-col items-center justify-center bg-white px-3 md:px-6 py-4 md:py-8 lg:py-10 rounded-2xl md:rounded-3xl shadow-lg w-full max-w-[140px] sm:max-w-[180px] md:max-w-[280px] lg:max-w-[340px]">
+                
+                <!-- 分子プルダウン -->
+                <div class="relative inline-block w-20 sm:w-24 md:w-36 lg:w-48">
+                    <select id="right-num-select" class="w-full bg-white border border-gray-300 rounded-xl px-2 py-1 md:py-2 lg:py-3 text-center text-4xl md:text-6xl lg:text-[86px] font-normal cursor-pointer outline-none transition-all hover:bg-gray-50 focus:ring-2 focus:ring-opacity-50">
+                        <!-- JSで動的に追加 -->
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 md:px-3 lg:px-4 text-gray-800">
+                        <svg class="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 分数の横線（括線をさらに20%細く、両端直角） -->
+                <div id="right-line" class="w-16 sm:w-20 md:w-40 lg:w-52 h-[3px] md:h-[6px] my-2 md:my-4 lg:my-6 transition-colors duration-500 rounded-none"></div>
+                
+                <!-- 分母プルダウン -->
+                <div class="relative inline-block w-20 sm:w-24 md:w-36 lg:w-48">
+                    <select id="right-den-select" class="w-full bg-white border border-gray-300 rounded-xl px-2 py-1 md:py-2 lg:py-3 text-center text-4xl md:text-6xl lg:text-[86px] font-normal cursor-pointer outline-none transition-all hover:bg-gray-50 focus:ring-2 focus:ring-opacity-50">
+                        <!-- JSで動的に追加 -->
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 md:px-3 lg:px-4 text-gray-800">
+                        <svg class="h-4 w-4 md:h-5 md:w-5 lg:h-6 lg:w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 下段: 左側の円グラフ -->
+        <div class="col-start-1 col-end-2 w-full flex justify-center">
+            <div class="w-full max-w-[140px] sm:max-w-[180px] md:max-w-[280px] lg:max-w-[340px] aspect-square drop-shadow-xl bg-white rounded-full transition-transform duration-300 hover:scale-105" id="left-pie-container">
+                <!-- SVGはJSで生成 -->
+            </div>
+        </div>
+
+        <!-- 下段: 中央の比較記号（円の中心同士の間に配置） -->
+        <div class="col-start-2 col-end-3 flex justify-center items-center">
+            <div id="center-sign" class="text-[115px] md:text-[172px] lg:text-[201px] font-normal transition-all duration-500 transform text-slate-400 scale-100" style="line-height: 0.8;">
+                =
+            </div>
+        </div>
+
+        <!-- 下段: 右側の円グラフ -->
+        <div class="col-start-3 col-end-4 w-full flex justify-center">
+            <div class="w-full max-w-[140px] sm:max-w-[180px] md:max-w-[280px] lg:max-w-[340px] aspect-square drop-shadow-xl bg-white rounded-full transition-transform duration-300 hover:scale-105" id="right-pie-container">
+                <!-- SVGはJSで生成 -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ライセンス表記 -->
+    <div class="fixed bottom-2 w-full text-center text-[10px] md:text-xs text-slate-500 opacity-70 pointer-events-none">
+        &copy; 2026 Takuma Iwahara. Released under the MIT License.
+    </div>
+
+    <script>
+        // --- 状態変数 ---
+        let state = {
+            leftNum: 1,
+            leftDen: 3,
+            rightNum: 1,
+            rightDen: 4
+        };
+
+        // --- DOM要素の取得 ---
+        const els = {
+            leftNumSel: document.getElementById('left-num-select'),
+            leftDenSel: document.getElementById('left-den-select'),
+            rightNumSel: document.getElementById('right-num-select'),
+            rightDenSel: document.getElementById('right-den-select'),
+            leftLine: document.getElementById('left-line'),
+            rightLine: document.getElementById('right-line'),
+            leftPie: document.getElementById('left-pie-container'),
+            rightPie: document.getElementById('right-pie-container'),
+            centerSign: document.getElementById('center-sign')
+        };
+
+        // --- 初期設定関数の実行 ---
+        function init() {
+            populateDenominators();
+            updateAllOptions();
+            attachEventListeners();
+            render();
+        }
+
+        // 分母のオプション生成 (1〜120)
+        function populateDenominators() {
+            let denOptions = '';
+            for (let i = 1; i <= 120; i++) {
+                denOptions += `<option value="${i}">${i}</option>`;
+            }
+            els.leftDenSel.innerHTML = denOptions;
+            els.rightDenSel.innerHTML = denOptions;
+            
+            els.leftDenSel.value = state.leftDen;
+            els.rightDenSel.value = state.rightDen;
+        }
+
+        // 分子のオプション生成 (0〜現在の分母)
+        function populateNumerators(selectEl, maxVal, currentVal) {
+            let numOptions = '';
+            for (let i = 0; i <= maxVal; i++) {
+                numOptions += `<option value="${i}">${i}</option>`;
+            }
+            selectEl.innerHTML = numOptions;
+            // 選択値が最大値を超えないように保護
+            selectEl.value = Math.min(currentVal, maxVal);
+        }
+
+        function updateAllOptions() {
+            populateNumerators(els.leftNumSel, state.leftDen, state.leftNum);
+            state.leftNum = parseInt(els.leftNumSel.value, 10); // 補正された値を状態に戻す
+            
+            populateNumerators(els.rightNumSel, state.rightDen, state.rightNum);
+            state.rightNum = parseInt(els.rightNumSel.value, 10);
+        }
+
+        // メインの描画・更新ロジック
+        function render() {
+            // 値の比較（クロス乗算で浮動小数点誤差を回避）
+            const isEq = (state.leftNum * state.rightDen) === (state.rightNum * state.leftDen);
+            const leftVal = state.leftNum / state.leftDen;
+            const rightVal = state.rightNum / state.rightDen;
+
+            let sign = "";
+            if (isEq) {
+                sign = "=";
+            } else if (leftVal > rightVal) {
+                sign = ">";
+            } else {
+                sign = "<";
+            }
+
+            // 色の決定
+            const leftColorHex = isEq ? "#0ea5e9" : "#ea580c"; // 水色 or 朱色
+            const rightColorHex = isEq ? "#0ea5e9" : "#0d9488"; // 水色 or 青緑色
+
+            // UI要素の更新
+            els.leftNumSel.style.color = leftColorHex;
+            els.leftDenSel.style.color = leftColorHex;
+            els.leftLine.style.backgroundColor = leftColorHex;
+
+            els.rightNumSel.style.color = rightColorHex;
+            els.rightDenSel.style.color = rightColorHex;
+            els.rightLine.style.backgroundColor = rightColorHex;
+
+            // 中央記号の更新
+            els.centerSign.innerText = sign;
+            if (isEq) {
+                els.centerSign.className = "text-[115px] md:text-[172px] lg:text-[201px] font-normal transition-all duration-500 transform text-sky-400 scale-110 drop-shadow-[0_0_15px_rgba(14,165,233,0.6)] animate-pulse";
+            } else {
+                els.centerSign.className = "text-[115px] md:text-[172px] lg:text-[201px] font-normal transition-all duration-500 transform text-slate-400 scale-100";
+            }
+
+            // 円グラフの描画
+            els.leftPie.innerHTML = generateSVG(state.leftNum, state.leftDen, leftColorHex);
+            els.rightPie.innerHTML = generateSVG(state.rightNum, state.rightDen, rightColorHex);
+        }
+
+        // SVGの生成関数
+        function generateSVG(numerator, denominator, color) {
+            const cx = 100;
+            const cy = 100;
+            const r = 98;
+            const isFull = numerator === denominator && denominator > 0;
+
+            let pathTag = "";
+            if (!isFull && numerator > 0) {
+                const angle = (numerator / denominator) * 2 * Math.PI;
+                const x1 = cx;
+                const y1 = cy - r; // 12時
+                const x2 = cx + r * Math.sin(angle);
+                const y2 = cy - r * Math.cos(angle);
+                
+                const largeArcFlag = angle > Math.PI ? 1 : 0;
+                const pathD = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+                
+                pathTag = `<path d="${pathD}" fill="${color}" style="transition: fill 0.5s ease;" />`;
+            } else if (isFull) {
+                pathTag = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" style="transition: fill 0.5s ease;" />`;
+            }
+
+            // 分割線の太さ調整
+            let strokeWidth = 1.5;
+            if (denominator > 10) strokeWidth = 1.0;
+            if (denominator > 30) strokeWidth = 0.5;
+            if (denominator > 60) strokeWidth = 0.25;
+
+            let linesTags = "";
+            if (denominator > 1) {
+                for (let i = 0; i < denominator; i++) {
+                    const angle = (i / denominator) * 2 * Math.PI;
+                    const x2 = cx + r * Math.sin(angle);
+                    const y2 = cy - r * Math.cos(angle);
+                    linesTags += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#9ca3af" stroke-width="${strokeWidth}" />`;
+                }
+            }
+
+            return `
+                <svg viewBox="0 0 200 200" class="w-full h-full">
+                    <!-- 背景の白円 -->
+                    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#f9fafb" stroke="#e5e7eb" stroke-width="2" />
+                    <!-- 色付け部分 -->
+                    ${pathTag}
+                    <!-- 分割線 -->
+                    ${linesTags}
+                    <!-- 外枠 -->
+                    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#6b7280" stroke-width="2" />
+                    <!-- 中心点 -->
+                    <circle cx="${cx}" cy="${cy}" r="2.5" fill="#4b5563" />
+                </svg>
+            `;
+        }
+
+        // イベントリスナーの登録
+        function attachEventListeners() {
+            // 左側の変更
+            els.leftNumSel.addEventListener('change', (e) => {
+                state.leftNum = parseInt(e.target.value, 10);
+                render();
+            });
+            els.leftDenSel.addEventListener('change', (e) => {
+                state.leftDen = parseInt(e.target.value, 10);
+                // 分母が変わったら分子の選択肢を更新
+                updateAllOptions();
+                render();
+            });
+
+            // 右側の変更
+            els.rightNumSel.addEventListener('change', (e) => {
+                state.rightNum = parseInt(e.target.value, 10);
+                render();
+            });
+            els.rightDenSel.addEventListener('change', (e) => {
+                state.rightDen = parseInt(e.target.value, 10);
+                // 分母が変わったら分子の選択肢を更新
+                updateAllOptions();
+                render();
+            });
+        }
+
+        // 初期化の実行
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
